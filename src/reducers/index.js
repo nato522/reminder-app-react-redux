@@ -1,10 +1,18 @@
-import { ADD_REMINDER } from '../constants';
+import { ADD_REMINDER, DELETE_REMINDER } from '../constants';
 
 const reminder = (action) => {
+    let { text, dueDate } = action;
     return {
-        text: action.text,
-        id: +new Date()
+        id: +new Date(),
+        dueDate,
+        text
     }
+}
+
+const removeById = (state = [], id) => {
+    const reminders = state.filter(reminder => reminder.id !== id);
+    console.log('new reduced reminders', reminders)
+    return reminders;
 }
 
 const reminders = (state = [], action) => {
@@ -12,7 +20,9 @@ const reminders = (state = [], action) => {
     switch(action.type){
         case ADD_REMINDER:
             reminders = [...state, reminder(action)];
-            console.log('reminders', reminders);
+            return reminders;
+        case DELETE_REMINDER:
+            reminders = removeById(state, action.id);
             return reminders;
         default:
             return state;
