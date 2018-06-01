@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addReminder } from '../actions';
 
 class App extends Component {
     constructor(props){
@@ -9,7 +11,24 @@ class App extends Component {
     }
 
     addReminder(){
-        console.log('state', this.state);
+        this.props.addReminder(this.state.text);
+    }
+
+    renderReminders() {
+        const { reminders } = this.props;
+        return (
+            <ul className="list-group col-sm-4">
+                {
+                    reminders.map(reminder => {
+                        return (
+                            <li key={reminder.id} className="list-group-item">
+                                <div>{reminder.text}</div>
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        )
     }
 
     render(){
@@ -18,7 +37,7 @@ class App extends Component {
                 <div className="title">
                     Reminder App
                 </div>
-                <div className="form-inline">
+                <div className="form-inline reminder-form">
                     <div className="from-group">
                         <input
                             type="text"
@@ -34,11 +53,17 @@ class App extends Component {
                     >
                         Add Reminder
                     </button>
-
                 </div>
+                { this.renderReminders() }
             </div>
         )
     }
 }
 
-export default App;
+function mapStateToProps(state){
+    return {
+        reminders: state
+    }
+}
+
+export default connect(mapStateToProps, { addReminder })(App);
